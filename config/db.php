@@ -13,6 +13,3 @@ if ($mysql === false) {
 }
 
 mysqli_set_charset($mysql, "utf8");
-
-$res = mysqli_query($mysql, "SELECT * FROM `feedback`");
-$arFeedback = mysqli_fetch_all($res, MYSQLI_ASSOC);

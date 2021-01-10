@@ -2,14 +2,15 @@
 
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config/config.php'; //подключаем настройки
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config/db.php'; //подключаем соединение с базой
-
 require_once 'FormFeedback.php'; //подключили класс FormFeedback
 /*
 echo '<pre>';
 print_r($arFeedback);
 echo '</pre>';
 */
-FormFeedback::addFeedback($mysql,'hgfghjkl', 'dfghjkldshfdgjhdbjfhgkl4');
+$formObject = new FormFeedback($mysql);
+$arFeedback = $formObject->select();
+$formObject->add();
 ?>
 
 <!DOCTYPE html>
@@ -45,8 +46,8 @@ FormFeedback::addFeedback($mysql,'hgfghjkl', 'dfghjkldshfdgjhdbjfhgkl4');
         Запись успешно сохранена!
     </div>
     <div id="form">
-        <form action="#form" method="POST">
-            <p><input class="form-control" placeholder="Ваше имя"></p>
+        <form action="/" method="POST">
+            <p><input id="inp" class="form-control" placeholder="Ваше имя"></p>
             <p><textarea class="form-control" placeholder="Ваш отзыв"></textarea></p>
             <p><input type="submit" class="btn btn-info btn-block" value="Сохранить"></p>
         </form>
