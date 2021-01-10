@@ -3,14 +3,18 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config/config.php'; //подключаем настройки
 require_once $_SERVER['DOCUMENT_ROOT'] . '/config/db.php'; //подключаем соединение с базой
 require_once 'FormFeedback.php'; //подключили класс FormFeedback
-/*
-echo '<pre>';
-print_r($arFeedback);
-echo '</pre>';
-*/
-$formObject = new FormFeedback($mysql);
-$arFeedback = $formObject->select();
-$formObject->add();
+
+$formObject = new FormFeedback($mysql); // создаем объект класса FormFeedback ($mysql - подключение к БД)
+$arFeedback = $formObject->select(); //вызываем метод select() класса FormFeedback для получения отзывов из БД
+
+if (isset($_POST['sub'])) { //если данные отправлены, т.е. нажата кнопка submit (отлавливаем клик по кнопке при помощи атрибута name="sub", значение которого прилетает в супер-глобальный массив POST)
+    if (!empty($_POST['name']) && !empty($_POST['text'])) { // то проверяем, не пустые ли поля формы
+        $formObject->add(); // вызываем метод add() класса FormFeedback для вставки отзыва в БД
+        header("location: /?add=ok"); // прописывает в адресную строку /?add=ok, (?add=ok - в адресную строку прописали GET-параметр для его использования в необходимых нам проверках)
+    } else {
+        header("location: /?add=no");
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -42,17 +46,25 @@ $formObject->add();
         <p>Отзывов пока нет :)</p>
     <? endif; ?>
 
-    <div class="info alert alert-info">
-        Запись успешно сохранена!
-    </div>
+    <? if ($_GET['add'] == 'ok'): ?>
+        <div class="info alert alert-info">
+            Запись успешно сохранена!
+        </div>
+    <? endif; ?>
+
+    <? if ($_GET['add'] == 'no'): ?>
+        <div class="alert alert-danger">
+            Заполните необходимые поля!
+        </div>
+    <? endif; ?>
+
     <div id="form">
-        <form action="/" method="POST">
-            <p><input id="inp" class="form-control" placeholder="Ваше имя"></p>
-            <p><textarea class="form-control" placeholder="Ваш отзыв"></textarea></p>
-            <p><input type="submit" class="btn btn-info btn-block" value="Сохранить"></p>
+        <form action="" method="POST">
+            <p><input name="name" class="form-control" placeholder="Ваше имя*"></p>
+            <p><textarea name="text" class="form-control" placeholder="Ваш отзыв*"></textarea></p>
+            <p><input name="sub" type="submit" class="btn btn-info btn-block" value="Сохранить"></p>
         </form>
     </div>
 </div>
 </body>
 </html>
-
